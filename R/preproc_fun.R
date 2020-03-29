@@ -402,7 +402,7 @@ preprocessing <- function(sourcePath, wd, selectedPolarisations="VV,VH", sourceB
 
     # Write
     input <- paste0("-Ssource=", dir_paths[8], "/target.dim")
-    output_filename <- stri_extract(source[i], regex = '[^T]*')
+    output_filename <- paste0(i,"_",stri_extract(source[i], regex = '[^T]*'))
       # extract the strings before the first occurance of the pattern 'T' in the source file name.
     opfile <- paste0("-Pfile=", output_filename)
     clrCache <- paste0("-PclearCacheAfterRowWrite=", clear_Cache_after_row_write)
