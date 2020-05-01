@@ -1,18 +1,13 @@
 Package: rSNAP
-Title: SNAP GPT in R
+Title: Preprocessing with SNAP GPT in R
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "Kemeng",
-           family = "Liu",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: This package enables users to process SAR data in R using tools called from ESA SNAP Toolbox. 
-	The pre-condition for using this package is to install SNAP toolbox and make SNAP GPT accessible in system path.
-Imports:
-	processx,
-	stringi
-License: What license it uses
+Author: Authors@R: person("Kemeng", "Liu", email = "kemeng.liu@stud-mail.uni-wuerzburg.de",
+  role = c("aut", "cre"))
+Description: This package aims to batch pre-process Sentinel-1 GRD images with SNAP Toolbox in R. 
+	The function "preprocessing" executes a pre-processing workflow of "read input >> apply orbit file >> remove thermal noise >> radiometric calibration >> speckle filtering >> terrain correction >> subset >> convert to dB >> write output". 
+	The pre-condition of using this package is to have SNAP toolbox incl. SNAP GPT installed and add it in system path (e.g. add "C:\Program Files\snap\bin\" to system path).
+Imports: processx, stringi
+License: 
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0

@@ -4,179 +4,209 @@
 \alias{preprocessing}
 \title{A Function to preprocess Sentinel-1 data using SNAP}
 \usage{
-preprocessing(sourcePath, wd, selectedPolarisations = "VV,VH",
-  sourceBands = "Sigma0_VV,Sigma0_VH", pixelSpacingInMeter,
-  pixelSpacingInDegree, geoRegion, referenceBand, region,
-  output_BEAM_DIMAP = TRUE, output_GeoTIFF = TRUE,
+preprocessing(
+  sourcePath,
+  wd,
+  selectedPolarisations = "VV,VH",
+  eastEdge,
+  westEdge,
+  northEdge,
+  southEdge,
+  pixelSpacingInMeter,
+  output_BEAM_DIMAP = TRUE,
+  output_GeoTIFF = TRUE,
   continue_on_failure = "false",
-  orbit_type = "Sentinel Precise (Auto Download)", poly_degree = 3,
-  reIntroduceThermalNoise = "false", removeThermalNoise = "true",
-  auxFile = "Latest Auxiliary File", createBetaBand = "false",
-  createGammaBand = "false", outputBetaBand = "false",
-  outputGammaBand = "false", outputSigmaBand = "true",
-  outputImageInComplex = "false", outputImageScaleInDb = "false",
-  anSize = 50, dampingFactor = 2, enl = 1, estimateENL = "false",
-  filter = "Lee Sigma", filterSizeX = 3, filterSizeY = 3,
-  numLooksStr = 1, sigmaStr = 0.9, targetWindowSizeStr = "3x3",
-  windowSize = "7x7", mapProjection = "WGS84(DD)",
-  saveSelectedSourceBand = "true", alignToStandardGrid = "false",
-  applyRadiometricNormalization = "false", demName = "SRTM 3Sec",
+  orbit_type = "Sentinel Precise (Auto Download)",
+  poly_degree = 3,
+  reIntroduceThermalNoise = "false",
+  removeThermalNoise = "true",
+  auxFile = "Latest Auxiliary File",
+  createBetaBand = "false",
+  createGammaBand = "false",
+  outputBetaBand = "false",
+  outputGammaBand = "false",
+  outputSigmaBand = "true",
+  outputImageInComplex = "false",
+  outputImageScaleInDb = "false",
+  anSize = 50,
+  dampingFactor = 2,
+  enl = 1,
+  estimateENL = "false",
+  filter = "Lee Sigma",
+  filterSizeX = 3,
+  filterSizeY = 3,
+  numLooksStr = 1,
+  sigmaStr = 0.9,
+  targetWindowSizeStr = "3x3",
+  windowSize = "7x7",
+  mapProjection = "WGS84(DD)",
+  saveSelectedSourceBand = "true",
+  alignToStandardGrid = "false",
+  applyRadiometricNormalization = "false",
+  demName = "SRTM 3Sec",
   demResamplingMethod = "BILINEAR_INTERPOLATION",
-  externalDEMApplyEGM = "true", externalDEMNoDataValue = 0,
+  externalDEMApplyEGM = "true",
+  externalDEMNoDataValue = 0,
   imgResamplingMethod = "BILINEAR_INTERPOLATION",
   incidenceAngleForSigma0 = "Use projected local incidence angle from DEM",
-  nodataValueAtSea = "true", outputComplex = "false",
-  saveBetaNought = "false", saveGammaNought = "false",
-  saveDEM = "false", saveIncidenceAngleFromEllipsoid = "false",
-  saveLatLon = "false", saveLocalIncidenceAngle = "false",
+  nodataValueAtSea = "true",
+  outputComplex = "false",
+  saveBetaNought = "false",
+  saveGammaNought = "false",
+  saveDEM = "false",
+  saveIncidenceAngleFromEllipsoid = "false",
+  saveLatLon = "false",
+  saveLocalIncidenceAngle = "false",
   saveProjectedLocalIncidenceAngle = "false",
-  saveSigmaNought = "false", standardGridOriginX = 0,
-  standardGridOriginY = 0, copyMetadata = "false",
-  fullSwath = "false", subSamplingX = 1, subSamplingY = 1,
+  saveSigmaNought = "false",
+  standardGridOriginX = 0,
+  standardGridOriginY = 0,
+  copyMetadata = "false",
+  fullSwath = "false",
+  subSamplingX = 1,
+  subSamplingY = 1,
   clear_Cache_after_row_write = "false",
-  delete_output_on_failure = "true", write_entire_tile_rows = "true")
+  delete_output_on_failure = "true",
+  write_entire_tile_rows = "true"
+)
 }
 \arguments{
-\item{sourcePath}{Path to where the S1 data (.zip file) is located}
+\item{sourcePath}{Path to where Sentinel-1 images (should be downloaded as ZIP-file before) are located.}
 
-\item{wd}{Working directory of the outputs}
+\item{wd}{Working directory for the outputs in-between and final outputs.}
 
-\item{selectedPolarisations}{=<string,string,string,...> The list of polarisations. Default to "VV,VH"}
+\item{selectedPolarisations}{List of polarisations (<string,string,...>). Default to "VV,VH".}
 
-\item{sourceBands}{=<string,string,string,...> The list of source bands. Default to "Sigma0_VV,Sigma0_VH"}
+\item{eastEdge}{The longitude of the eastern edge of the rectangular area to subset. At least three digits after decimal point are strongly recommended.}
+
+\item{westEdge}{The longitude of the western edge of the rectangular area to subset. At least three digits after decimal point are strongly recommended.}
+
+\item{northEdge}{The latitude of the northern edge of the rectangular area to subset. At least three digits after decimal point are strongly recommended.}
+
+\item{southEdge}{The latitude of the southern edge of the rectangular area to subset. At least three digits after decimal point are strongly recommended.}
 
 \item{pixelSpacingInMeter}{The pixel spacing in meters. This should be omitted if "pixelSpacingInDegree" is defined.}
 
-\item{pixelSpacingInDegree}{The pixel spacing in degrees. This should be omitted if "pixelSpacingInMeter" is defined.}
+\item{output_BEAM_DIMAP}{If TRUE, the function will create output in BEAM-DIMAP(.dim) format. Default to TRUE.}
 
-\item{geoRegion}{The subset region in geographical coordinates, must be given as string charactor, e.g. "<lon1> <lat1>, <lon2> <lat2>, ..., <lon1> <lat1>". The first and the last coordinates should be identical to make the polygon closed. This should be omitted if "referenceBand" and "region" are defined.}
-
-\item{referenceBand}{The band used to indicate pixel coordinates. This should be omitted if "geoRegion" is defined.}
-
-\item{region}{The subset region in pixel coordinates. This should be omitted if "geoRegion" is defined.}
-
-\item{output_BEAM_DIMAP}{If TRUE, the function will create output in BEAM-DIMAP(.dim) format. Default to TRUE}
-
-\item{output_GeoTIFF}{If TRUE, the function will create output in GeoTIFF format. Default to TRUE}
+\item{output_GeoTIFF}{If TRUE, the function will create output in GeoTIFF format. Default to TRUE.}
 
 \item{continue_on_failure}{Default to "false".}
 
 \item{orbit_type}{Value must be one of "Sentinel Precise (Auto Download)", "Sentinel Restituted (Auto Download)", "DORIS Precise VOR (ENVISAT) (Auto Download)", "DELFT Precise (ENVISAT, ERS1&2) (Auto Download)", "PRARE Precise (ERS1&2) (Auto Download)". Default to "Sentinel Precise (Auto Download)".}
 
-\item{poly_degree}{Default to 3}
+\item{poly_degree}{Default to 3.}
 
-\item{reIntroduceThermalNoise}{Re-introduce thermal noise. Default to "false"}
+\item{reIntroduceThermalNoise}{Re-introduce thermal noise. Default to "false".}
 
-\item{removeThermalNoise}{Remove thermal noise. Default to "true"}
+\item{removeThermalNoise}{Remove thermal noise. Default to "true".}
 
-\item{auxFile}{The auxiliary file. Value must be one of "Latest Auxiliary File", "Product Auxiliary File", "External Auxiliary File". Default to "Latest Auxuliary File"}
+\item{auxFile}{The auxiliary file. Value must be one of "Latest Auxiliary File", "Product Auxiliary File", "External Auxiliary File". Default to "Latest Auxuliary File".}
 
-\item{createBetaBand}{Create beta0 virtual band. Default to "false"}
+\item{createBetaBand}{Create beta0 virtual band. Default to "false".}
 
-\item{createGammaBand}{Create gamma0 virtual band. Default to "false"}
+\item{createGammaBand}{Create gamma0 virtual band. Default to "false."}
 
-\item{outputBetaBand}{Output beta0 band. Default to "false"}
+\item{outputBetaBand}{Output beta0 band. Default to "false".}
 
-\item{outputGammaBand}{Output gamma0 band. Default to "false"}
+\item{outputGammaBand}{Output gamma0 band. Default to "false".}
 
-\item{outputSigmaBand}{Output sigma0 band. Default to "true"}
+\item{outputSigmaBand}{Output sigma0 band. Default to "true".}
 
-\item{outputImageInComplex}{Output image in complex. Default to "false"}
+\item{outputImageInComplex}{Output image in complex. Default to "false".}
 
-\item{outputImageScaleInDb}{Output image scale. Default to "false"}
+\item{outputImageScaleInDb}{Output image scale. Default to "false".}
 
-\item{anSize}{The Adaptive Neighbourhood size. Valid internal is (1,200]. Default to 50}
+\item{anSize}{The Adaptive Neighbourhood size. Valid internal is (1,200]. Default to 50.}
 
-\item{dampingFactor}{The damping factor(Frost filter only). Valid interval is (0,100]. Default to 2}
+\item{dampingFactor}{The damping factor(Frost filter only). Valid interval is (0,100]. Default to 2.}
 
-\item{enl}{The number of looks in Speckle Filtering. Valid interval is (0, *). Default to 1.0}
+\item{enl}{The number of looks in Speckle Filtering. Valid interval is (0, *). Default to 1.0.}
 
-\item{estimateENL}{Default to "false"}
+\item{estimateENL}{Default to "false".}
 
-\item{filter}{Value must be one of "None", "Boxcar", "Median", "Frost", "Gamma Map", "Lee", "Refined Lee", "Lee Sigma", "IDAN". Default to "Lee Sigma"}
+\item{filter}{Value must be one of "None", "Boxcar", "Median", "Frost", "Gamma Map", "Lee", "Refined Lee", "Lee Sigma", "IDAN". Default to "Lee Sigma".}
 
-\item{filterSizeX}{The kernel x dimension. Valid interval is (1, 100]. Default to 3}
+\item{filterSizeX}{The kernel x dimension. Valid interval is (1, 100]. Default to 3.}
 
-\item{filterSizeY}{the kernel y dimension. Valid interval is (1, 100]. Default to 3}
+\item{filterSizeY}{the kernel y dimension. Valid interval is (1, 100]. Default to 3.}
 
-\item{numLooksStr}{Value must be one of "1", "2", "3", "4". Default to "1"}
+\item{numLooksStr}{Value must be one of "1", "2", "3", "4". Default to "1".}
 
-\item{sigmaStr}{Value must be one of "0.5", "0.6", "0.7", "0.8", "0.9". Default to "0.9"}
+\item{sigmaStr}{Value must be one of "0.5", "0.6", "0.7", "0.8", "0.9". Default to "0.9".}
 
 \item{targetWindowSizeStr}{Value must be one of "3x3", "5x5". Default to "3x3".}
 
-\item{windowSize}{Value must be one of "5x5", "7x7", "9x9", "11x11", "13x13", "15x15", "17x17". Default to "7x7"}
+\item{windowSize}{Value must be one of "5x5", "7x7", "9x9", "11x11", "13x13", "15x15", "17x17". Default to "7x7".}
 
-\item{mapProjection}{The coordinate reference system in well knewn text format. Default value is "WGS84(DD)"}
+\item{mapProjection}{Default is "WGS84(DD)". To project in other coordinate system is not working for the moment.}
 
-\item{saveSelectedSourceBand}{Default to "true"}
+\item{saveSelectedSourceBand}{Default to "true".}
 
-\item{alignToStandardGrid}{Force the image grid to be aligned with a specific point. Default to "false"}
+\item{alignToStandardGrid}{Force the image grid to be aligned with a specific point. Default to "false".}
 
-\item{applyRadiometricNormalization}{Default to "false"}
+\item{applyRadiometricNormalization}{Default to "false".}
 
-\item{demName}{The digital elevation model. Default to "SRTM 3sec"}
+\item{demName}{The digital elevation model. Default to "SRTM 3sec".}
 
-\item{demResamplingMethod}{Value must be one of "NEAREST_NEIGHBOUR", "BILINEAR_INTERPOLATION", "CUBIC_CONVOLUTION", "BISINC_5_POINT_INTERPOLATION", "BISIC_11_POINT_INTERPOLATION", "BISIC_21_POINT_INTERPOLATION", "BICUBIC_INTERPOLATION", "DELAUNAY_INTERPOLATION". Default to "BILINEAR_INTERPOLATION"}
+\item{demResamplingMethod}{Value must be one of "NEAREST_NEIGHBOUR", "BILINEAR_INTERPOLATION", "CUBIC_CONVOLUTION", "BISINC_5_POINT_INTERPOLATION", "BISIC_11_POINT_INTERPOLATION", "BISIC_21_POINT_INTERPOLATION", "BICUBIC_INTERPOLATION", "DELAUNAY_INTERPOLATION". Default to "BILINEAR_INTERPOLATION".}
 
-\item{externalDEMApplyEGM}{Default to "true"}
+\item{externalDEMApplyEGM}{Default to "true".}
 
-\item{externalDEMNoDataValue}{Default to 0}
+\item{externalDEMNoDataValue}{Default to 0.}
 
-\item{imgResamplingMethod}{Value must be one of "NEAREST_NEIGHBOUR", "BILINEAR_INTERPOLATION", "CUBIC_CONVOLUTION", "BISINC_5_POINT_INTERPOLATION", "BISIC_11_POINT_INTERPOLATION", "BISIC_21_POINT_INTERPOLATION", "BICUBIC_INTERPOLATION", "DELAUNAY_INTERPOLATION". Default to "BILINEAR_INTERPOLATION"}
+\item{imgResamplingMethod}{Value must be one of "NEAREST_NEIGHBOUR", "BILINEAR_INTERPOLATION", "CUBIC_CONVOLUTION", "BISINC_5_POINT_INTERPOLATION", "BISIC_11_POINT_INTERPOLATION", "BISIC_21_POINT_INTERPOLATION", "BICUBIC_INTERPOLATION", "DELAUNAY_INTERPOLATION". Default to "BILINEAR_INTERPOLATION".}
 
-\item{incidenceAngleForSigma0}{Value must be one of "Use incidence angle from Ellipsoid", "Use local incidence angle from DEM", "Use projected local incidence angle from DEM". Default to "Use projected local incidence angle from DEM"}
+\item{incidenceAngleForSigma0}{Value must be one of "Use incidence angle from Ellipsoid", "Use local incidence angle from DEM", "Use projected local incidence angle from DEM". Default to "Use projected local incidence angle from DEM".}
 
-\item{nodataValueAtSea}{Mask the sea with no data value (faster). Default to "true"}
+\item{nodataValueAtSea}{Mask the sea with no data value (faster). Default to "true".}
 
-\item{outputComplex}{Default to "false"}
+\item{outputComplex}{Default to "false".}
 
-\item{saveBetaNought}{Default to "false"}
+\item{saveBetaNought}{Default to "false".}
 
-\item{saveGammaNought}{Default to "false"}
+\item{saveGammaNought}{Default to "false".}
 
-\item{saveDEM}{Default to "false"}
+\item{saveDEM}{Default to "false".}
 
-\item{saveIncidenceAngleFromEllipsoid}{Default to "false"}
+\item{saveIncidenceAngleFromEllipsoid}{Default to "false".}
 
-\item{saveLatLon}{Default to "false"}
+\item{saveLatLon}{Default to "false".}
 
-\item{saveLocalIncidenceAngle}{Default to "false"}
+\item{saveLocalIncidenceAngle}{Default to "false".}
 
-\item{saveProjectedLocalIncidenceAngle}{Default to "false"}
+\item{saveProjectedLocalIncidenceAngle}{Default to "false".}
 
-\item{saveSigmaNought}{Default to "false"}
+\item{saveSigmaNought}{Default to "false".}
 
-\item{standardGridOriginX}{x-coordinate of the standard grid's origin point. Default to 0}
+\item{standardGridOriginX}{x-coordinate of the standard grid's origin point. Default to 0.}
 
-\item{standardGridOriginY}{y-coordinate of the standard grid's origin point. Default to 0}
+\item{standardGridOriginY}{y-coordinate of the standard grid's origin point. Default to 0.}
 
-\item{copyMetadata}{Whether to copy the metadata of the source product. Default to "false"}
+\item{copyMetadata}{Whether to copy the metadata of the source product. Default to "false".}
 
-\item{fullSwath}{Forces the operator to extend the subset region to the full swath. Default to "false"}
+\item{fullSwath}{Forces the operator to extend the subset region to the full swath. Default to "false".}
 
-\item{subSamplingX}{The pixel sub-sampling step in X (horizontal image direction). Default to 1}
+\item{subSamplingX}{The pixel sub-sampling step in X (horizontal image direction). Default to 1.}
 
-\item{subSamplingY}{The pixel sub-sampling step in Y (vertical image direction). Default to 1}
+\item{subSamplingY}{The pixel sub-sampling step in Y (vertical image direction). Default to 1.}
 
-\item{clear_Cache_after_row_write}{If true, the internal tile cache is cleared after a tile row has been written. Ignored if writeEntireTileRows=false. Default to "false"}
+\item{clear_Cache_after_row_write}{If true, the internal tile cache is cleared after a tile row has been written. Ignored if writeEntireTileRows=false. Default to "false".}
 
-\item{delete_output_on_failure}{If true, all output files are deleted after a failed write operation. Default to "true"}
+\item{delete_output_on_failure}{If true, all output files are deleted after a failed write operation. Default to "true".}
 
-\item{write_entire_tile_rows}{If true, the write operation waits until an entire tile row is computed. Default to "true"}
+\item{write_entire_tile_rows}{If true, the write operation waits until an entire tile row is computed. Default to "true".}
 }
 \description{
-This function allows you to preprocess Sentinel-1 data in batch mode, where the S1 data should be downloaded as ZIP file before using this function.
-The S1 data will be processed through the following steps in sequence:
+This function is to batch pre-process Sentinel-1 GRD images. Sentinel-1 data should be downloaded as ZIP file before using this function.
+The images are processed in the following steps by sequence:
 Read --> Apply Orbit File --> Remove Thermal Noise --> Calibration --> Speckle Filtering --> Terrain Correction --> Subset --> Convert to dB --> Write
 }
 \examples{
-preprocessing(sourcePath = "<path to source product>",
-              wd = "<path to directory for outputs>",
+preprocessing(sourcePath = "<path to input images>",
+              wd = "<path to working directory>",
               selectedPolarisations = "VH",
-              sourceBands = "Sigma0_VH",
               pixelSpacingInMeter=10,
-              geoRegion = "100.01839447021484 26.000097274780273, 100.41411590576172 26.000097274780273, 100.41411590576172 25.508270263671875, 100.01839447021484 25.508270263671875, 100.01839447021484 26.000097274780273")
-
+              eastEdge = 100.018, westEdge = 100.414, northEdge = 26.000, southEdge = 25.508)
 }
 \keyword{rSNAP}
